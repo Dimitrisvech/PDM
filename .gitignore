@@ -1,5 +1,5 @@
 *.class
-
+*.ps1
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
