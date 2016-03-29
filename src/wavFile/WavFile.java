@@ -76,6 +76,10 @@ public class WavFile
 		return validBits;
 	}
 
+	//public void setFrameCounter(long newFrameCounter) { frameCounter = newFrameCounter; } // (custom method) set frameCounter to whatever
+
+	//public void offsetFrameCounter(long FCOffset) { frameCounter = frameCounter + FCOffset <= 0 ? 0 : frameCounter + FCOffset; } // (custom method) offset frameCounter from current position
+
 	public static WavFile newWavFile(File file, int numChannels, long numFrames, int validBits, long sampleRate) throws IOException, WavFileException
 	{
 		// Instantiate new Wavfile and initialise
