@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -24,6 +25,7 @@ public class Windowing
     //protected long windowSize;
     protected Collection<double[]> windowedSamples;
     protected String folderPath;
+    private static ArrayList<String> fileList;
 
     //constructor
     public Windowing(AudioSample audioSample, int windowSizeMilliseconds, double winOverlayPercentage, String folderPath)
@@ -54,8 +56,8 @@ public class Windowing
 //            File currentFile = new File(index.getPath(), s);
 //            currentFile.delete();
 //        }
-
-        String path = folderPath + File.separator + audioSample.getFileName();
+        fileList = new ArrayList<>();
+        String path = folderPath + File.separator + audioSample.getFileName()+"_w.txt";
 
         windowSizeSamples = (long)windowSizeMilliseconds * audioSample.getAudioFile().getSampleRate() / 1000;
         winOverlaySamples = (long)(windowSizeSamples * winOverlayPercentage);
@@ -69,9 +71,9 @@ public class Windowing
         } catch (IOException | WavFileException e) {
             e.printStackTrace();
         }
-        path = path + "_" + i.toString() + ".txt";
-        writeToFile(path, buffer);
-        path = folderPath + File.separator + audioSample.getFileName();
+        //path = path + "_" + i.toString() + ".txt";
+        writeToMemory(buffer);
+        //path = folderPath + File.separator + audioSample.getFileName();
         i++;
 
         //long curWinSize = windowSizeSamples;
@@ -96,44 +98,25 @@ public class Windowing
                 for (int k=0; k<(int)windowSizeSamples; k++)
                     buffer[j][k] = tempBuffer[j][k];
 
-            // check for last part of file to be smaller than window size (nyet work)
-            /*if (audioSample.getAudioFile().getFramesRemaining() < windowSizeSamples)
-            {
-                curWinSize = audioSample.getAudioFile().getFramesRemaining();
-                audioSample.getAudioFile().offsetFrameCounter(-(windowSizeSamples - audioSample.getAudioFile().getFramesRemaining()));
-            }
-            else
-                audioSample.getAudioFile().offsetFrameCounter(-winOverlaySamples); //offset backwards for overlaying*/
 
-            path = path + "_" + i.toString() + ".txt";
-
-            /*File f = new File(path);
-            f.getParentFile().mkdirs();
-            try {
-                f.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            List<String> lines = Arrays.asList(Arrays.toString(buffer));
-            Path fpath = Paths.get(f.getAbsolutePath());
-            try {
-                Files.write(fpath, lines, Charset.forName("UTF-8"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-            writeToFile(path, buffer);
-            path = folderPath + File.separator + audioSample.getFileName();
+            writeToMemory(buffer);
+            //path = folderPath + File.separator + audioSample.getFileName();
             i++;
         }
         while(framesRead != 0 || audioSample.getAudioFile().getFramesRemaining() >= windowSizeSamples);
-
+        writeToFile(path);
         //audioSample.getAudioFile().readFrames(/*buffer, offset, numOfFramesToRead*/);
 
     }
 
-    private static void writeToFile(String path, double[][] buffer)
+    private static void writeToMemory(double[][] buffer)
+    {
+        List<String> lines = Arrays.asList(Arrays.deepToString(buffer));
+        fileList.add(lines.get(0));
+
+    }
+
+    private static void writeToFile(String path)
     {
         File f = new File(path);
         f.getParentFile().mkdirs();
@@ -144,10 +127,10 @@ public class Windowing
         }
 
 
-        List<String> lines = Arrays.asList(Arrays.deepToString(buffer));
-        Path fpath = Paths.get(f.getAbsolutePath());
+        //List<String> lines = Arrays.asList(Arrays.deepToString(buffer));
+        Path fPath = Paths.get(f.getAbsolutePath());
         try {
-            Files.write(fpath, lines, Charset.forName("UTF-8"));
+            Files.write(fPath, fileList, Charset.forName("UTF-8"));
         } catch (IOException e) {
             e.printStackTrace();
         }
