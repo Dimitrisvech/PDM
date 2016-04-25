@@ -22,7 +22,7 @@ function varargout = MainUI(varargin)
 
 % Edit the above text to modify the response to help MainUI
 
-% Last Modified by GUIDE v2.5 25-Apr-2016 14:27:49
+% Last Modified by GUIDE v2.5 25-Apr-2016 18:52:09
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -61,7 +61,7 @@ handles.output = hObject;
 guidata(hObject, handles);
 
 % UIWAIT makes MainUI wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+% uiwait(handles.mainForm);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -121,3 +121,4 @@ function windowingButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 windowing(get(handles.pathEdit,'String'));
+set(hObject,'ForegroundColor','green');
